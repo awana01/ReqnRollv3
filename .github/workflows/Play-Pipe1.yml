@@ -40,36 +40,31 @@ jobs:
     - name: Restore
       run: dotnet restore
 
-    #~ - name: Install Playwright
-      #~ shell: pwsh
-      #~ run: |
-          #~ pwsh ./bin/Debug/net9.0/playwright.ps1 install 
-          
-      # ----------------------------
-      # Cache Playwright Browsers
-      # ----------------------------
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        with:
+  # ----------------------------
+  # Cache Playwright Browsers
+  # ----------------------------
+    - name: Cache Playwright browsers
+      uses: actions/cache@v4
+      with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             playwright-${{ runner.os }}-
 
-      # ----------------------------
-      # Restore & Build
-      # ----------------------------
-      - name: Restore dependencies
-        run: dotnet restore
+   # ----------------------------
+   # Restore & Build
+   # ----------------------------
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Build solution
-        run: dotnet build --no-restore
+    - name: Build solution
+      run: dotnet build --no-restore
 
-      # ----------------------------
-      # Install Playwright Browsers
-      # ----------------------------
-      - name: Install Playwright browsers
-        run: |
+   # ----------------------------
+   # Install Playwright Browsers
+   # ----------------------------
+    - name: Install Playwright browsers
+      run: |
           dotnet tool install --global Microsoft.Playwright.CLI
           playwright install chromium --with-deps
 

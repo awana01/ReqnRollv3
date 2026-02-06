@@ -63,13 +63,13 @@ jobs:
    # ----------------------------
    # Install Playwright Browsers
    # ----------------------------
-    - name: Install Playwright browsers
+    - name: Install Playwright CLI
       run: |
           dotnet tool install --global Microsoft.Playwright.CLI
           
     - name: Install Playwright In Project
       run: |
-              pwsh ./bin/Debug/netX/playwright.ps1 install chromium --with-deps
+              pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
 
     - name: Test
       run: dotnet test

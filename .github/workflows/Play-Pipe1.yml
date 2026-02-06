@@ -19,7 +19,7 @@ jobs:
       with:
         dotnet-version: '9.0.x'
 
-    # Cache NuGet
+  # Cache NuGet
     - name: Cache NuGet
       uses: actions/cache@v4
       with:
@@ -28,7 +28,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
 
-    # Cache Playwright
+  # Cache Playwright
     - name: Cache Playwright
       uses: actions/cache@v4
       with:
@@ -67,8 +67,8 @@ jobs:
       run: |
           dotnet tool install --global Microsoft.Playwright.CLI
           
-     - name: Install Playwright In Project
-       run: |
+    - name: Install Playwright In Project
+      run: |
               pwsh ./bin/Debug/netX/playwright.ps1 install chromium --with-deps
 
     - name: Test

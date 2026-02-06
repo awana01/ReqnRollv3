@@ -2,75 +2,184 @@ name: Tests-On-CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
 
-jobs:
-  test:
-    runs-on: windows-latest   # works also on windows-latest, macos-latest
+permissions:
+  contents: write
 
-    env:
-      PLAYWRIGHT_BROWSERS_PATH: ~/.playwright
+
+jobs:
+  test-and-publish:
+    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '9.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
 
-  # Cache NuGet
-    - name: Cache NuGet
-      uses: actions/cache@v4
-      with:
+     # Cache NuGet
+      - name: Cache NuGet
+        uses: actions/cache@v4
+        with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
         restore-keys: |
-          ${{ runner.os }}-nuget-
+             ${{ runner.os }}-nuget-
 
-  # Cache Playwright
-    - name: Cache Playwright
-      uses: actions/cache@v4
-      with:
-        path: ~/.playwright
-        key: ${{ runner.os }}-playwright-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-playwright-
-
-    - name: Restore
-      run: dotnet restore
-
-  # ----------------------------
-  # Cache Playwright Browsers
-  # ----------------------------
-    - name: Cache Playwright browsers
-      uses: actions/cache@v4
-      with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+    # Cache Playwright
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/packages.lock.json') }}
           restore-keys: |
-            playwright-${{ runner.os }}-
+               ${{ runner.os }}-playwright-
 
-   # ----------------------------
-   # Restore & Build
-   # ----------------------------
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore
+        run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --no-restore
+      - name: Build
+        run: dotnet build
+        
+        
+      - name: Install Playwright Deps
+        shell: pwsh
+        run: |
+            pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
 
-   # ----------------------------
-   # Install Playwright Browsers
-   # ----------------------------
-   #~ - name: Install Playwright CLI
-   #~ run: |
-   #~ dotnet tool install --global Microsoft.Playwright.CLI
+      - name: Run tests
+        run: dotnet test
+        continue-on-error: true
+
+      - name: Install Allure CLI
+        shell: pwsh
+        run: |
+          curl -L https://github.com/allure-framework/allure2/releases/download/2.36.0/allure-2.36.0.zip -o allure.zip
+          tar -xf allure.zip
+          "$PWD\allure-2.36.0\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
           
-    - name: Install Playwright In Project
-      run: |
-              pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
+      - name: Set Allure results directory
+        shell: pwsh
+        run: |
+            echo "ALLURE_RESULTS_DIRECTORY=$env:GITHUB_WORKSPACE\allure-results" >> $env:GITHUB_ENV
 
-    - name: Test
-      run: dotnet test
-      continue-on-error: true
+      - name: Run tests
+        run: dotnet test
+
+      - name: Debug Allure results
+        shell: pwsh
+        run: |
+           Get-ChildItem bin/Debug/net9.0/allure-results -Recurse
+
+      - name: Install Allure CLI
+        shell: pwsh
+        run: |
+             curl -L https://github.com/allure-framework/allure2/releases/download/2.36.0/allure-2.36.0.zip -o allure.zip
+             tar -xf allure.zip
+             "$PWD\allure-2.36.0\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
+
+      - name: Generate Allure Report
+        run: allure generate bin/Debug/net9.0/allure-results -o allure-report --clean
+
+     
+      - name: Locate Allure results anywhere
+        shell: pwsh
+        run: |
+            Get-ChildItem . -Recurse -Directory -Filter allure-results
+   
+      - name: Publish Allure report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+          force_orphan: true
+
+
+
+
+
+
+
+
+
+
+
+#~ on:
+  #~ push:
+  #~ pull_request:
+
+#~ jobs:
+  #~ test:
+    #~ runs-on: windows-latest   # works also on windows-latest, macos-latest
+
+    #~ env:
+      #~ PLAYWRIGHT_BROWSERS_PATH: ~/.playwright
+
+    #~ steps:
+    #~ - uses: actions/checkout@v4
+
+    #~ - name: Setup .NET
+      #~ uses: actions/setup-dotnet@v4
+      #~ with:
+        #~ dotnet-version: '9.0.x'
+
+  #~ # Cache NuGet
+    #~ - name: Cache NuGet
+      #~ uses: actions/cache@v4
+      #~ with:
+        #~ path: ~/.nuget/packages
+        #~ key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        #~ restore-keys: |
+          #~ ${{ runner.os }}-nuget-
+
+  #~ # Cache Playwright
+    #~ - name: Cache Playwright
+      #~ uses: actions/cache@v4
+      #~ with:
+        #~ path: ~/.playwright
+        #~ key: ${{ runner.os }}-playwright-${{ hashFiles('**/packages.lock.json') }}
+        #~ restore-keys: |
+          #~ ${{ runner.os }}-playwright-
+
+    #~ - name: Restore
+      #~ run: dotnet restore
+
+  #~ # ----------------------------
+  #~ # Cache Playwright Browsers
+  #~ # ----------------------------
+    #~ - name: Cache Playwright browsers
+      #~ uses: actions/cache@v4
+      #~ with:
+          #~ path: ~/.cache/ms-playwright
+          #~ key: playwright-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          #~ restore-keys: |
+            #~ playwright-${{ runner.os }}-
+
+   #~ # ----------------------------
+   #~ # Restore & Build
+   #~ # ----------------------------
+    #~ - name: Restore dependencies
+      #~ run: dotnet restore
+
+    #~ - name: Build solution
+      #~ run: dotnet build --no-restore
+
+   #~ # ----------------------------
+   #~ # Install Playwright Browsers
+   #~ # ----------------------------
+   ##~ - name: Install Playwright CLI
+   ##~ run: |
+   ##~ dotnet tool install --global Microsoft.Playwright.CLI
+          
+    #~ - name: Install Playwright In Project
+      #~ run: |
+              #~ pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
+
+    #~ - name: Test
+      #~ run: dotnet test
+      #~ continue-on-error: true

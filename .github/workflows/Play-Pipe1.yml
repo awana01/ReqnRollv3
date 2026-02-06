@@ -43,7 +43,7 @@ jobs:
     - name: Install Playwright
       shell: pwsh
       run: |
-          pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
+          pwsh ./bin/Debug/net9.0/playwright.ps1 install 
 
     - name: Test
       run: dotnet test

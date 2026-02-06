@@ -41,7 +41,8 @@ jobs:
       run: dotnet restore
 
     - name: Install Playwright
-      run: pwsh ./bin/Debug/net*/playwright.ps1 install
+       shell: pwsh
+      run: pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
 
     - name: Test
       run: dotnet test

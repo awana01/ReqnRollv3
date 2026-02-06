@@ -1,0 +1,1 @@
+[{"uid":"ad437e8fc947d477","name":"Admin can access dashboard on Site A","time":{"start":1770393725351,"stop":1770393735372,"duration":10021},"status":"passed","severity":"normal"},{"uid":"c8b7bdecce595536","name":"Sample NoAuth DuckDuckGo Tests","time":{"start":1770393703814,"stop":1770393704870,"duration":1056},"status":"passed","severity":"normal"}]

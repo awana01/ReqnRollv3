@@ -60,13 +60,13 @@ namespace ReqnRollV3.Drivers
 
             var newContextOptions = new BrowserNewContextOptions
             {
-                ViewportSize = new ViewportSize
-                {
-                    Width = contextOptions.ViewportWidth,
-                    Height = contextOptions.ViewportHeight
-                },
-                IgnoreHTTPSErrors = contextOptions.IgnoreHTTPSErrors,
-                RecordVideoDir = Directory.GetCurrentDirectory().Split("bin")[0]
+                //ViewportSize = new ViewportSize
+                //{
+                //    Width = contextOptions.ViewportWidth,
+                //    Height = contextOptions.ViewportHeight
+                //},
+                //IgnoreHTTPSErrors = contextOptions.IgnoreHTTPSErrors,
+                //RecordVideoDir = Directory.GetCurrentDirectory().Split("bin")[0]
 
 
             };

@@ -12,12 +12,12 @@ namespace ReqnRollv3.Steps
     public class CommonSteps
     {
 
-        public readonly PlaywrightDriver _driver;
+        public readonly PlaywrightDriver? _driver;
         public readonly IPage _page;
 
         public CommonSteps(PlaywrightDriver driver)
         {
-            _page = driver.Page;
+            _page = driver.Page!;
         }
 
 

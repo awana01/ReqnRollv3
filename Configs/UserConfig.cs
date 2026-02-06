@@ -8,9 +8,9 @@ namespace ReqnRollv3.Configs
 {
     public class UserConfig
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string FileName { get; set; } // e.g. "auth_admin.json"
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+        public string? FileName { get; set; } // e.g. "auth_admin.json"
     }
 
 

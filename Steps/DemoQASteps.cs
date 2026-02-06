@@ -15,13 +15,13 @@ namespace ReqnRollv3.Steps
         public readonly PlaywrightDriver _driver;
         public DemoQASteps(PlaywrightDriver driver)
         {
-            _driver = driver;
+            _driver = driver!;
         }
 
         [Then(@"user loogged in sucessfully")]
         public async Task Sp1()
         {
-           string? userMail= await _driver.Page.Locator("div[class='header-links']>ul>li:nth-child(1)").TextContentAsync();
+           string? userMail= await _driver.Page!.Locator("div[class='header-links']>ul>li:nth-child(1)").TextContentAsync();
             Console.WriteLine(userMail);
            await Assertions.Expect(_driver.Page.Locator("div[class='header-links']>ul>li:nth-child(1)")).ToContainTextAsync("zora123@yopmail.com");
         }
@@ -36,14 +36,14 @@ namespace ReqnRollv3.Steps
             switch (menuItems) 
             {
                 case "Books":
-                    _driver.Page.Locator($"ul[class='top-menu']>li>a:has-text('{menuItems}')").ClickAsync();
+                    _driver.Page!.Locator($"ul[class='top-menu']>li>a:has-text('{menuItems}')").ClickAsync();
                     break;
                 case "Computers":
-                    _driver.Page.Locator($"ul[class='top-menu']>li>a:has-text('{menuItems}')").ClickAsync();
+                    _driver.Page!.Locator($"ul[class='top-menu']>li>a:has-text('{menuItems}')").ClickAsync();
                     break;
                 case "Apparel & Shoes":
                     
-                    _driver.Page.Locator($"ul[class='top-menu']>li>a:has-text('{menuItems}')").ClickAsync();
+                    _driver.Page!.Locator($"ul[class='top-menu']>li>a:has-text('{menuItems}')").ClickAsync();
                     break;
                 default:
                     throw new Exception("Option is not defined");
@@ -56,7 +56,7 @@ namespace ReqnRollv3.Steps
         [Then(@"verify page title as {string}")]
         public async Task Sp2(string pageTitle) {
 
-            await Assertions.Expect(_driver.Page.Locator("div[class='page-title']>h1")).ToContainTextAsync(pageTitle);
+            await Assertions.Expect(_driver.Page!.Locator("div[class='page-title']>h1")).ToContainTextAsync(pageTitle);
         }
 
 

@@ -63,7 +63,7 @@ namespace ReqRollV2.StepDefinitions
 
         public OrangeHrmSteps(PlaywrightDriver driver)
         {
-            _driver = driver;
+            _driver = driver!;
             //_page = _driver.Page;
         }
 
@@ -72,14 +72,14 @@ namespace ReqRollV2.StepDefinitions
         public async Task ThenTheDashboardShouldBeVisible()
         {
             Thread.Sleep(10000);
-            var header = _driver.Page.Locator(".oxd-topbar-header-title");
+            var header = _driver.Page!.Locator(".oxd-topbar-header-title");
             await Assertions.Expect(header).ToHaveTextAsync("Dashboard");
         }
 
         [Then(@"I view the employee list")]
         public async Task GivenIViewTheEmployeeList()
         {
-            await _driver.Page.ClickAsync("text=PIM");
+            await _driver.Page!.ClickAsync("text=PIM");
             await Assertions.Expect(_driver.Page.Locator("span.oxd-topbar-header-breadcrumb")).ToHaveTextAsync("PIM");
         }
 
@@ -87,7 +87,7 @@ namespace ReqRollV2.StepDefinitions
         public async Task f1()
         {
             Console.WriteLine("dashboard should visible");
-            await Assertions.Expect(_driver.Page.Locator("span.oxd-userdropdown-tab")).ToBeVisibleAsync();
+            await Assertions.Expect(_driver.Page!.Locator("span.oxd-userdropdown-tab")).ToBeVisibleAsync();
             _driver.Page.Locator("\"text=PIM\"");
         }
 
@@ -102,16 +102,16 @@ namespace ReqRollV2.StepDefinitions
             switch (menuText)
             {
                 case "Admin":
-                    await _driver.Page.ClickAsync($"text={menuText}");
+                    await _driver.Page!.ClickAsync($"text={menuText}");
                     break;
                 case "PIM":
-                    await _driver.Page.ClickAsync($"text={menuText.ToUpper()}");
+                    await _driver.Page!.ClickAsync($"text={menuText.ToUpper()}");
                     break;
                 case "Leave":
-                    await _driver.Page.ClickAsync($"text={menuText}");
+                    await _driver.Page!.ClickAsync($"text={menuText}");
                     break;
                 case "Time":
-                    await _driver.Page.ClickAsync($"text={menuText}");
+                    await _driver.Page!.ClickAsync($"text={menuText}");
                     break;
                 default:
                     throw new NotImplementedException("No Menu Item is found");

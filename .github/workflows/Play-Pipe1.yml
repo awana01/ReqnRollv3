@@ -52,9 +52,7 @@ jobs:
         run: |
             pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium --with-deps
 
-      - name: Run tests
-        run: dotnet test
-        continue-on-error: true
+
 
       - name: Install Allure CLI
         shell: pwsh
@@ -68,24 +66,18 @@ jobs:
         run: |
             echo "ALLURE_RESULTS_DIRECTORY=$env:GITHUB_WORKSPACE\allure-results" >> $env:GITHUB_ENV
 
-      - name: Run tests
+      - name: Run Tests
         run: dotnet test
-
+        continue-on-error: true
+      
       - name: Debug Allure results
         shell: pwsh
         run: |
            Get-ChildItem bin/Debug/net9.0/allure-results -Recurse
 
-      - name: Install Allure CLI
-        shell: pwsh
-        run: |
-             curl -L https://github.com/allure-framework/allure2/releases/download/2.36.0/allure-2.36.0.zip -o allure.zip
-             tar -xf allure.zip
-             "$PWD\allure-2.36.0\bin" | Out-File -Append -FilePath $env:GITHUB_PATH
-
       - name: Generate Allure Report
         run: allure generate bin/Debug/net9.0/allure-results -o allure-report --clean
-
+       
      
       - name: Locate Allure results anywhere
         shell: pwsh
@@ -98,6 +90,10 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: allure-report
           force_orphan: true
+
+
+
+
 
 
 

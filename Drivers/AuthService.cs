@@ -116,12 +116,12 @@ namespace ReqnRollV3.Drivers
            
         }
 
-        private async Task LoginFunc1(PlaywrightDriver _driver,SiteConfig site,UserConfig user, string AuthFullStatePath)
+        private async Task LoginFunc1(PlaywrightDriver _driver,SiteConfig? site,UserConfig? user, string? AuthFullStatePath)
         {
-            await _driver.Page!.FillAsync(site.Selectors.Username, user.Username);
-            await _driver.Page.FillAsync(site.Selectors.Password, user.Password);
-            await _driver.Page.ClickAsync(site.Selectors.LoginButton);
-            await _driver.Page.WaitForSelectorAsync(site.Selectors.LoginSuccess, new() { Timeout = 35000 });
+            await _driver.Page!.FillAsync(site!.Selectors!.Username!, user.Username!);
+            await _driver.Page.FillAsync(site!.Selectors.Password!, user.Password);
+            await _driver.Page.ClickAsync(site!.Selectors.LoginButton!);
+            await _driver.Page.WaitForSelectorAsync(site.Selectors.LoginSuccess!, new() { Timeout = 35000 });
             await _driver.Context!.StorageStateAsync(new() { Path = AuthFullStatePath });
         }
 
@@ -222,11 +222,11 @@ namespace ReqnRollV3.Drivers
 
 
 
-        public static async Task<bool> ExistsAsync(PlaywrightDriver driver, string selector, int timeoutMs = 3000)
+        public static async Task<bool> ExistsAsync(PlaywrightDriver driver, string? selector, int timeoutMs = 3000)
         {
             try
             {
-                await driver.Page!.Locator(selector).WaitForAsync(new()
+                await driver.Page!.Locator(selector!).WaitForAsync(new()
                 {
                     State = WaitForSelectorState.Attached,
                     Timeout = timeoutMs

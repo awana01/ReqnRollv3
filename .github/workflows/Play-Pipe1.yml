@@ -1,0 +1,47 @@
+name: Tests-On-CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest   # works also on windows-latest, macos-latest
+
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ~/.playwright
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    # Cache NuGet
+    - name: Cache NuGet
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    # Cache Playwright
+    - name: Cache Playwright
+      uses: actions/cache@v4
+      with:
+        path: ~/.playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-
+
+    - name: Restore
+      run: dotnet restore
+
+    - name: Install Playwright
+      run: pwsh ./bin/Debug/net*/playwright.ps1 install
+
+    - name: Test
+      run: dotnet test

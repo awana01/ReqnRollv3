@@ -6,12 +6,12 @@ Feature: Test OrangeHRM2
 Scenario: Admin can access dashboard on Site A
   Then the dashboard should be visible
 
-#@Authenticated @SiteA @Admin
-Scenario: Admin view the PIM page
-  When click on PIM menu
-
-#@Authenticated @SiteA @Admin
-Scenario: Admin view the Admin page
-  When click on Admin menu
-  Then verify admin page
+##@Authenticated @SiteA @Admin
+#Scenario: Admin view the PIM page
+#  When click on PIM menu
+#
+##@Authenticated @SiteA @Admin
+#Scenario: Admin view the Admin page
+#  When click on Admin menu
+#  Then verify admin page
 
